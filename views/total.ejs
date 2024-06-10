@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h4>Last 30 days</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Load</th>
+                <th>Solar PV</th>
+                <th>Battery Charged</th>
+                <th>Battery Discharged</th>
+                <th>Grid Used</th>
+                <th>Grid Exported</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let i = data.loadPowerData.length - 1; i >= 1 && i >= data.loadPowerData.length - 30; i--) { %>
+                <tr>
+                    <td><%= new Date(data.loadPowerData[i][0]).toLocaleDateString() %></td>
+                    <% if (data.loadPowerData[i-1][1] !== 0) { %>
+                        <td><%= Math.abs(data.loadPowerData[i][1] - data.loadPowerData[i-1][1]).toFixed(1) %> kWh</td>
+                        <td><%= Math.abs(data.pvPowerData[i][1] - data.pvPowerData[i-1][1]).toFixed(1) %> kWh</td>
+                        <td><%= Math.abs(data.batteryStateOfChargeData[i][1] - data.batteryStateOfChargeData[i-1][1]).toFixed(1) %> kWh</td>
+                        <td><%= Math.abs(data.batteryPowerData[i][1] - data.batteryPowerData[i-1][1]).toFixed(1) %> kWh</td>
+                        <td><%= Math.abs(data.gridPowerData[i][1] - data.gridPowerData[i-1][1]).toFixed(1) %> kWh</td>
+                        <td><%= Math.abs(Math.max(0, (data.pvPowerData[i][1] - data.loadPowerData[i][1] + data.batteryPowerData[i][1]) - (data.pvPowerData[i-1][1] - data.loadPowerData[i-1][1] + data.batteryPowerData[i-1][1]))).toFixed(1) %> kWh</td>
+                    <% } else { %>
+                        <td>0 kWh</td>
+                        <td>0 kWh</td>
+                        <td>0 kWh</td>
+                        <td>0 kWh</td>
+                        <td>0 kWh</td>
+                        <td>0 kWh</td>
+                    <% } %>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchDataFromInfluxDB() {
+            const influxDBEndpoint = 'http://192.168.160.55:8086/query?db=homeassistant&u=admin&p=adminadmin';
+
+            const queries = [
+                `SELECT mean("value") AS "loadPowerData"
+                    FROM "state"
+                    WHERE "topic" = 'solar_assistant_DEYE/total/load_energy/state'
+                    AND time >= now() - 30d
+                    GROUP BY time(1d)`,
+                `SELECT mean("value") AS "pvPowerData"
+                    FROM "state"
+                    WHERE "topic" = 'solar_assistant_DEYE/total/pv_energy/state'
+                    AND time >= now() - 30d
+                    GROUP BY time(1d)`,
+                `SELECT mean("value") AS "batteryStateOfChargeData"
+                    FROM "state"
+                    WHERE "topic" = 'solar_assistant_DEYE/total/battery_energy_in/state'
+                    AND time >= now() - 30d
+                    GROUP BY time(1d)`,
+                `SELECT mean("value") AS "batteryPowerData"
+                    FROM "state"
+                    WHERE "topic" = 'solar_assistant_DEYE/total/battery_energy_out/state'
+                    AND time >= now() - 30d
+                    GROUP BY time(1d)`,
+                `SELECT mean("value") AS "gridPowerData"
+                    FROM "state"
+                    WHERE "topic" = 'solar_assistant_DEYE/total/grid_energy_in/state'
+                    AND time >= now() - 30d
+                    GROUP BY time(1d)`,
+                `SELECT mean("value") AS "gridVoltageData"
+                    FROM "state"
+                    WHERE "topic" = 'solar_assistant_DEYE/total/grid_energy_out/state'
+                    AND time >= now() - 30d
+                    GROUP BY time(1d)`
+            ];
+
+            try {
+                const responses = await Promise.all(queries.map(async query => {
+                    const response = await fetch(influxDBEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `q=${encodeURIComponent(query)}`
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.statusText}`);
+                    }
+                    return await response.json();
+                }));
+
+                const data = responses.map(response => response.results[0].series[0]);
+
+                return {
+                    loadPowerData: data[0].values,
+                    pvPowerData: data[1].values,
+                    batteryStateOfChargeData: data[2].values,
+                    batteryPowerData: data[3].values,
+                    gridPowerData: data[4].values,
+                    gridVoltageData: data[5].values
+                };
+            } catch (error) {
+                console.error('Error fetching data from InfluxDB:', error);
+                throw error;
+            }
+        }
+    </script>
+</body>
+</html>

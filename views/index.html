@@ -1,0 +1,1362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>Carbonoz SolarAutopilot</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!----css3---->
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <!--google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+    <!--google material icon-->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons"rel="stylesheet">
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.stock.min.js"></script>
+<script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+
+<style>
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-gap: 40px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    position: relative;
+    width: 220px;
+    height: 250px;
+    background-color: #2a2a2a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-content {
+    position: relative;
+    width: 150px;
+    height: 150px;
+  }
+
+
+
+  .card-content svg circle {
+    width: 100%;
+    height: 100%;
+    fill: transparent;
+    stroke-width: 2;
+    stroke: #191919;
+    transform: translate(5px, 5px);
+
+
+  }
+
+  .card-content svg circle:nth-child(2) {
+    stroke: var(--clr);
+    stroke-dasharray: 440;
+    stroke-dashoffset: calc(440 - (440 * var(--num)) / 100);
+    opacity: 0;
+    animation: fadeIn 1s linear forwards;
+    animation-delay: 2.5s;
+  }
+
+  @keyframes fadeIn{
+    0%{
+      opacity: 0;
+    }
+    100%{
+      opacity: 1;
+    }
+  }
+
+   .circle-progress {
+    position: absolute;
+inset: 5px;
+z-index: 10;
+  } 
+
+  @keyframes animateDot {
+    0%{
+      transform: rotate(0deg);
+    }
+    100%{
+      transform: rotate(calc(3.6deg * var(--num)));
+    }
+  }
+
+  .circle-progress::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--clr);
+    box-shadow: 0 0 10px var(--clr),
+                0 0 30px var(--clr);
+  }
+
+  .number {
+    position: absolute;
+    top: 50%;
+    left: 58%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    animation: fadeIn 1s linear forwards;
+    animation-delay: 2.5s;
+  }
+
+  .number .value {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .icon {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 300;
+    font-size: 0.75em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+  }
+
+  iframe {
+          width: 100%;
+          height: 100vh; 
+          border: none;
+      }
+
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+.chartMenu {
+  width: 100vw;
+  height: 40px;
+  background: #1A1A1A;
+  color: rgba(54, 162, 235, 1);
+}
+.chartMenu p {
+  padding: 10px;
+  font-size: 20px;
+}
+.chartCard {
+  width: 70vw;
+  height: calc(100vh - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chartBox {
+  width: 700px;
+  padding: 20px;
+  border-radius: 20px;
+  border: solid 3px rgba(54, 162, 235, 1);
+  background: white;
+}
+     
+button{
+width: 100%;
+height: 40px;
+margin: 10px auto;
+justify-content: center;
+display: block;
+color: #29334a;
+font-size: 20px;
+font-weight:bold;
+margin-top: 18px;
+outline: none;
+border: none;
+border-radius: 5px;
+transition: .3s ease-in;
+cursor: pointer;
+box-shadow: 5px 20px 40px black;
+transition: all 0.3s ease;
+}
+button:hover{
+box-shadow: none;
+} 
+input,select{
+width: 100%;
+height: 30px;
+background: transparent;
+justify-content: center;
+display: flex;
+margin: 18px auto;
+padding: 10px;
+outline: none;
+border-radius: 50px;
+color: #000;
+
+}
+.cards {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 18px;
+       
+    }
+
+    .card-contents {
+        border: 1px solid #dddddd;
+        border-radius: 8px;
+        text-align: center;
+        background-color: #2a2a2a;
+        color: #fff;
+        
+       
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+  
+    }
+
+    .col-4 {
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+
+
+
+ 
+</style>
+  </head>
+  <body>
+    <div class="navigation">
+      <div class="wrapper">
+        <div class="body-overlay"></div>
+        <div id="sidebar">
+          <div class="sidebar-header">
+            <h3><img src="img/logo.png" class="img-fluid" /><span>Carbonoz </span></h3>
+          </div>
+          <ul class="list-unstyled component m-0">
+            <li class="active">
+              <a href="#" onclick="showContent('dashboard', 'Dashboard')" class="dashboard"><i class="material-icons">dashboard</i>Dashboard</a>
+            </li>
+            <li>
+              <a href="#" onclick="showContent('chart', 'Charts')" class="charts"><i class="material-icons">insert_chart</i>Charts</a>
+            </li>
+            <li>
+              <a href="#" onclick="showContent('analytics', 'Totals')" class="total-icon"><i class="material-icons">functions</i>Totals</a>
+            </li>
+            <li>
+              <a href="#" onclick="showContent('messages', 'Messages')" class="message-icon"><i class="material-icons">message</i>Message</a>
+            </li>
+            <li>
+              <a href="#" onclick="showContent('automation', 'Automation')" class="automation-icon"><i class="material-icons">build</i>Automation</a>
+            </li>
+            <li>
+              <a href="#" onclick="showContent('settings', 'Settings')" class="config-icon"><i class="material-icons">settings</i>Configuration</a>
+            </li>
+          </ul>
+        </div>
+        <div id="content">
+          <div class="top-navbar">
+            <div class="xd-topbar">
+              <div class="row">
+                <div class="col-2 col-md-1 col-lg-1 order-2 order-md-1 align-self-center">
+                  <div class="xp-menubar">
+                    <span class="material-icons text-white">signal_cellular_alt</span>
+                  </div>
+                </div>
+                <div class="col-md-5 col-lg-3 order-3 order-md-2"></div>
+                <div class="col-10 col-md-6 col-lg-8 order-1 order-md-3">
+                  <div class="xp-profilebar text-right">
+                    <nav class="navbar p-0"></nav>
+                  </div>
+                </div>
+              </div>
+              <div class="xp-breadcrumbbar text-center">
+                <h4 class="page-title">Dashboard</h4>
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Carbonoz</a></li>
+                  <li class="breadcrumb-item active" aria-curent="page">SolarAutopilot</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <!------top-navbar-end----------->
+
+          <!------main-content-start----------->
+          <div class="main-content">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="table-wrapper">
+                  <div class="table-title">
+                    <div class="row">
+                      <div class="col-sm-6 p-0 flex justify-content-lg-start justify-content-center">
+                        <h2 class="ml-lg-2" id="section-title">Charts</h2>
+                      </div>
+                      <div class="col-sm-6 p-0 flex justify-content-lg-end justify-content-center"></div>
+                    </div>
+                  </div>
+
+                  <div class="content" id="dashboard" style="display: none;">
+                    <main>
+                      <div class="grid-container">
+                   <!-- Solar Production Card -->
+<div class="card">
+    <div class="card-content" style="--clr:#06ccff;--num:78">
+        <div class="circle-progress solar-production">
+            <svg>
+                <circle class="background" cx="70" cy="70" r="70"></circle>
+                <circle class="progress" cx="70" cy="70" r="70"></circle>
+            </svg>
+            <i class="fas fa-solar-panel icon" style="color: #06ccff;">Solar</i>
+            <div class="number">
+                <div class="value">0.0 W </div>
+            </div>
+        </div>
+        <!-- Assuming this component is defined elsewhere -->
+        <!-- <home-assistant-energy-usage-card period="daily" detail-period="monthly" data="<%= JSON.stringify(data.solarProductionData) %>"></home-assistant-energy-usage-card> -->
+    </div>
+</div>
+
+<!-- Battery State of Charge Card -->
+<div class="card">
+    <div class="card-content" style="--clr:#ff00be;--num:78">
+        <div class="circle-progress battery-state-of-charge">
+            <svg>
+                <circle class="background" cx="70" cy="70" r="70"></circle>
+                <circle class="progress" cx="70" cy="70" r="70"></circle>
+            </svg>
+            <i class="fas fa-battery-full icon" style="color: #ff00be;">Battery</i>
+            <div class="number">
+                <div class="value">0.0 %</div>
+            </div>
+        </div>
+        <!-- Assuming this component is defined elsewhere -->
+        <!-- <home-assistant-battery-storage-card data="<%= JSON.stringify(data.batteryStateOfChargeData) %>"></home-assistant-battery-storage-card> -->
+    </div>
+</div>
+
+<!-- Grid Import Card -->
+<div class="card">
+    <div class="card-content" style="--clr:#fee800;--num:78">
+        <div class="circle-progress grid-import">
+            <svg>
+                <circle class="background" cx="70" cy="70" r="70"></circle>
+                <circle class="progress" cx="70" cy="70" r="70"></circle>
+            </svg>
+            <i class="fas fa-bolt icon" style="color: #fee800;">Grid</i>
+            <div class="number">
+                <div class="value">0.0 W</div>
+            </div>
+        </div>
+        <!-- Assuming this component is defined elsewhere -->
+        <!-- <home-assistant-energy-usage-card period="daily" detail-period="monthly" data="<%= JSON.stringify(data.gridPowerData) %>"></home-assistant-energy-usage-card> -->
+    </div>
+</div>
+
+<!-- Load Power Card -->
+<div class="card">
+    <div class="card-content" style="--clr: #00ffae;--num:78">
+        <div class="circle-progress load-power">
+            <svg>
+                <circle class="background" cx="70" cy="70" r="70"></circle>
+                <circle class="progress" cx="70" cy="70" r="70"></circle>
+            </svg>
+            <i class="fas fa-bolt icon" style="color: #00ffae;">Load</i>
+            <div class="number">
+                <div class="value">0.0 W</div>
+            </div>
+        </div>
+        <!-- Assuming this component is defined elsewhere -->
+        <!-- <home-assistant-energy-usage-card period="daily" detail-period="monthly" data="<%= JSON.stringify(data.loadPowerData) %>"></home-assistant-energy-usage-card> -->
+    </div>
+</div>
+
+<!-- Grid Voltage Card -->
+<div class="card">
+    <div class="card-content" style="--clr:#ffa500;--num:78">
+        <div class="circle-progress grid-voltage">
+            <svg>
+                <circle class="background" cx="70" cy="70" r="70"></circle>
+                <circle class="progress" cx="70" cy="70" r="70"></circle>
+            </svg>
+            <i class="fas fa-bolt icon" style="color: #ffa500;">Grid V</i>
+            <div class="number">
+                <div class="value">0.0 V</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+ <!-- Solar PV Totals -->
+ <div class="cards">
+    <div class="card-contents">
+        <h4>Solar PV Totals</h4>
+        <div class="row">
+            <div class="col-4">
+                <h5>Daily</h5>
+                <div class="total-value" id="daily-total">kWh</div>
+            </div>
+            <div class="col-4">
+                <h5>Weekly</h5>
+                <div class="total-value" id="weekly-total">kWh</div>
+            </div>
+            <div class="col-4">
+                <h5>Monthly</h5>
+                <div class="total-value" id="monthly-total">kWh</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+                      </div>
+                      <div id="chartContainer3" style="height: 300px; width: 100%; float: left;"></div>
+                  </main>
+                  </div>
+                  <div class="content" id="messages" style="display: none;">
+                    <h4>Incoming Messages</h4>
+                    <div>
+                        <label for="category">Filter by category:</label>
+                        <select id="category" onchange="fetchMessages()">
+                            <option value="">All</option>
+                            <option value="inverter_1">Inverter 1</option>
+                            <option value="inverter_2">Inverter 2</option>
+                            <option value="load_power">Load Power</option>
+                            <option value="grid_power">Grid Power</option>
+                            <option value="battery_1">Battery 1</option>
+                            <option value="battery_2">Battery 2</option>
+                            <option value="battery_3">Battery 3</option>
+                        </select>
+                    </div>
+                    <div id="message-container">Loading messages...</div>
+                
+               
+                  </div>
+                  <div class="content" id="settings" style="display: none;">
+                    <div class="confuguration-container">
+                      <form id="inverterConfigForm">
+                        <label for="inverterBrand">Select Inverter:</label>
+                        <select id="inverterBrand" name="inverterBrand" onchange="showInverterSettings(this.value)" required>
+                          <option value="" disabled>Select Inverter Brand</option>
+                          <option value="Axpert">Axpert</option>
+                          <option value="Growatt">Growatt</option>
+                          <option value="EG4">EG4</option>
+                          <option value="Deye">Deye</option>
+                          <option value="Kodak">Kodak</option>
+                          <option value="SunSynk">SunSynk</option>
+                          <option value="MPP Solar">MPP Solar</option>
+                          <option value="Sol-Ark">Sol-Ark</option>
+                          <option value="Mecer">Mecer</option>
+                          <option value="RCT">RCT</option>
+                          <option value="MUST Power">MUST Power</option>
+                          <option value="SRNE">SRNE</option>
+                          <option value="InfiniSolar">InfiniSolar</option>
+                          <option value="Easun Power">Easun Power</option>
+                          <option value="Megarevo">Megarevo</option>
+                          <option value="Luxpower">Luxpower</option>
+                        </select>
+                        <br><br>
+                        <div id="inverterSettingsContainer"></div>
+                        <button type="button" onclick="saveInverterConfig()">Save</button>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="content" id="chart" style="display: none;">
+                   
+                    <iframe src="http://192.168.160.55:3000/d/adhb794pm42kgf/carbonoz?orgId=1&refresh=5s&theme=light"
+                    width="100%" height="500" frameborder="0"></iframe>
+                  </div>
+                  <div class="content" id="analytics" style="display: none;">
+                   
+                  <!-- Totals -->
+                  <br>
+                  <br>
+                  <br>
+                  <div id="chartContainer2" style="height: 300px; width:100%;"></div>
+                  <br>
+                  <br>
+                  <br>
+                  <h4>Daily Data</h4>
+                  <div class="loading" id="daily-loading">Loading daily data...</div>
+                  <table id="daily-data-table" style="display: none;">
+                      <thead>
+                          <tr>
+                              <th>Date</th>
+                              <th>Load</th>
+                              <th>Solar PV</th>
+                              <th>Battery charged</th>
+                              <th>Battery discharged</th>
+                              <th>Grid used</th>
+                              <th>Grid exported</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <!-- Daily data rows will be dynamically added here -->
+                      </tbody>
+                  </table>
+                  <br>
+                  <br>
+                  <div id="chartContainer1" style="height:300px; width:100%;"></div>
+                  <br>
+                  <br>
+                  <br>
+                  <br>
+                  <h4>Last 12 Months</h4>
+                  <div class="loading" id="monthly-loading">Loading monthly data...</div>
+                  <table id="monthly-data-table" style="display: none;">
+                      <thead>
+                          <tr>
+                              <th>Month</th>
+                              <th>Load</th>
+                              <th>Solar PV</th>
+                              <th>Battery charged</th>
+                              <th>Battery discharged</th>
+                              <th>Grid used</th>
+                              <th>Grid exported</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <!-- Monthly data rows will be dynamically added here -->
+                      </tbody>
+                  </table>
+                  <button onclick="exportToCSV()" style="background-color: black;width: 15%;">Export to CSV</button>
+                  </div>
+                  <div class="content" id="automation" style="display: none;">
+                    <form id="automationSettingsForm">
+                      <label for="inverterBrand">Select Inverter:</label>
+                      <select id="inverterBrand" name="inverterBrand" onchange="loadAutomationSettings(this.value)">
+                        <option value="" disabled>Select Inverter Brand</option>
+                        <option value="Axpert">Axpert</option>
+                        <option value="Growatt">Growatt</option>
+                        <option value="EG4">EG4</option>
+                        <option value="Deye">Deye</option>
+                        <option value="Kodak">Kodak</option>
+                        <option value="SunSynk">SunSynk</option>
+                        <option value="MPP Solar">MPP Solar</option>
+                        <option value="Sol-Ark">Sol-Ark</option>
+                        <option value="Mecer">Mecer</option>
+                        <option value="RCT">RCT</option>
+                        <option value="MUST Power">MUST Power</option>
+                        <option value="SRNE">SRNE</option>
+                        <option value="InfiniSolar">InfiniSolar</option>
+                        <option value="Easun Power">Easun Power</option>
+                        <option value="Megarevo">Megarevo</option>
+                        <option value="Luxpower">Luxpower</option>
+                      </select>
+                      <br><br>
+                      <table id="automationSettings">
+                        <tr>
+                          <th>Day</th>
+                          <th>Start Hour</th>
+                          <th>End Hour</th>
+                          <th>Max Battery Discharge Power</th>
+                          <th>Grid Charge Enabled</th>
+                          <th>Generator Charge Enabled</th>
+                          <th>Discharge Voltage</th>
+                          <th>Actions</th>
+                        </tr>
+                      </table>
+                      <button class="btnAdd" type="button" onclick="addRow()" disabled>Add New Setting</button>
+                    </form>
+                  
+                          
+                          
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!------main-content-end----------->
+          </div>
+
+          <!----footer-design------------->
+          <footer class="footer">
+            <div class="container-fluid">
+              <div class="footer-in">
+                <p class="mb-0">&copy 2024 Carbonoz . All Rights Reserved.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $(".xp-menubar").on('click',function(){
+          $("#sidebar").toggleClass('active');
+          $("#content").toggleClass('active');
+        });
+
+        $('.xp-menubar,.body-overlay').on('click',function(){
+          $("#sidebar,.body-overlay").toggleClass('show-nav');
+        });
+      });
+
+      function showContent(id, title) {
+        // Hide all content divs
+        const contents = document.querySelectorAll('.content');
+        contents.forEach(content => content.style.display = 'none');
+
+        // Show the selected content div
+        const selectedContent = document.getElementById(id);
+        if (selectedContent) {
+          selectedContent.style.display = 'block';
+        }
+
+        // Update the section title
+        const sectionTitle = document.getElementById('section-title');
+        if (sectionTitle) {
+          sectionTitle.textContent = title;
+        }
+      }
+
+      // Show the dashboard by default
+      showContent('dashboard', 'Dashboard');
+    </script>
+
+
+<!-- javscript for dashboard -->
+
+<script>
+
+async function fetchInfluxDBData() {
+    const influxDBEndpoint = 'http://192.168.160.55:8086/query?db=homeassistant&u=admin&p=adminadmin';
+
+    const queries = [
+        `SELECT last("value") AS "solarProduction" FROM "state" WHERE "topic" = 'solar_assistant_DEYE/total/pv_power/state'`,
+        `SELECT last("value") AS "batteryStateOfCharge" FROM "state" WHERE "topic" = 'solar_assistant_DEYE/total/battery_state_of_charge/state'`,
+        `SELECT last("value") AS "gridPower" FROM "state" WHERE "topic" = 'solar_assistant_DEYE/total/grid_power/state'`,
+        `SELECT last("value") AS "loadPower" FROM "state" WHERE "topic" = 'solar_assistant_DEYE/total/load_power/state'`,
+        `SELECT last("value") AS "gridVoltage" FROM "state" WHERE "topic" = 'solar_assistant_DEYE/total/grid_voltage/state'`
+    ];
+
+    try {
+        const responses = await Promise.all(queries.map(async query => {
+            const response = await fetch(influxDBEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `q=${encodeURIComponent(query)}`
+            });
+            return await response.json();
+        }));
+
+        const data = responses.map(response => response.results[0].series[0].values[0][1]);
+
+        return {
+            solarProduction: data[0],
+            batteryStateOfCharge: data[1],
+            gridPower: data[2],
+            loadPower: data[3],
+            gridVoltage: data[4]
+        };
+    } catch (error) {
+        console.error('Error fetching data from InfluxDB:', error);
+        throw error;
+    }
+}
+
+function updateRealTimeData() {
+    fetchInfluxDBData()
+        .then(data => {
+            updateCircleProgress('.solar-production', { value: data.solarProduction }, '#06ccff');
+            updateCircleProgress('.battery-state-of-charge', { value: data.batteryStateOfCharge }, '#ff00be');
+            updateCircleProgress('.grid-import', { value: data.gridPower }, '#fee800');
+            updateCircleProgress('.load-power', { value: data.loadPower }, '#00ffae');
+            updateCircleProgress('.grid-voltage', { value: data.gridVoltage }, '#ffa500');
+        })
+        .catch(error => console.error('Error updating real-time data:', error));
+}
+
+function updateCircleProgress(selector, data, color) {
+    const progressElement = document.querySelector(`${selector} .progress`);
+    const valueElement = document.querySelector(`${selector} .value`);
+    const iconElement = document.querySelector(`${selector} .icon`);
+
+    let valueText = `${data.value.toFixed(2)} ${selector === '.grid-voltage' ? 'V' : 'W'}`;
+    if (selector === '.battery-state-of-charge') {
+        valueText = `${data.value.toFixed(2)} %`;
+    }
+
+    // Update the progress bar width and value
+    progressElement.style.strokeDashoffset = 565.48 - (565.48 * (data.value / 1000));
+    progressElement.style.stroke = color;
+    iconElement.style.color = color;
+    valueElement.textContent = valueText;
+}
+
+// Update the real-time data every 5 seconds
+setInterval(updateRealTimeData, 5000);
+
+</script>
+
+<!-- Messages -->
+<script>
+
+const influxDBEndpoint = 'http://192.168.160.55:8086/query?db=homeassistant&u=admin&p=adminadmin';
+  const messageLimit = 200; // Set the maximum number of messages to display
+
+  async function fetchMessages() {
+      const category = document.getElementById('category').value;
+      let query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+
+      if (category) {
+          switch (category) {
+              case 'inverter_1':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE\\/inverter_1.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+              case 'inverter_2':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE\\/inverter_2.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+              case 'load_power':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE.*\\/load_power.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+              case 'grid_power':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE.*\\/grid_power.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+              case 'battery_1':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE\\/battery_1.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+              case 'battery_2':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE\\/battery_2.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+              case 'battery_3':
+                  query = `SELECT * FROM "state" WHERE "topic" =~ /solar_assistant_DEYE\\/battery_3.*/ ORDER BY time DESC LIMIT ${messageLimit}`;
+                  break;
+          }
+      }
+
+      try {
+          const response = await fetch(influxDBEndpoint, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: `q=${encodeURIComponent(query)}`
+          });
+
+          if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+          }
+
+          const data = await response.json();
+          displayMessages(data);
+      } catch (error) {
+          console.error('Error fetching messages:', error);
+          document.getElementById('message-container').innerText = 'Error fetching messages';
+      }
+  }
+
+  function displayMessages(data) {
+      const messageContainer = document.getElementById('message-container');
+      messageContainer.innerHTML = ''; // Clear previous messages
+
+      if (data.results && data.results[0] && data.results[0].series && data.results[0].series[0]) {
+          const messages = data.results[0].series[0].values;
+          const columns = data.results[0].series[0].columns;
+          const table = document.createElement('table');
+          table.innerHTML = `<caption>Messages</caption>
+                          <thead>
+                              <tr>
+                                  <th>Topic</th>
+                                  <th>Value</th>
+                              </tr>
+                          </thead>`;
+
+          const tbody = document.createElement('tbody');
+          messages.forEach(message => {
+              const tr = document.createElement('tr');
+              const topicIndex = columns.indexOf('topic');
+              const valueIndex = columns.indexOf('value');
+              tr.innerHTML = `<td>${message[topicIndex]}</td>
+                              <td>${message[valueIndex]}</td>`;
+              tbody.appendChild(tr);
+          });
+
+          table.appendChild(tbody);
+          messageContainer.appendChild(table);
+      } else {
+          messageContainer.innerText = 'No messages found';
+      }
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchMessages);
+
+</script>
+
+
+
+<!-- autmation -->
+<script>
+
+const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+let automationSettings = {};
+
+function loadAutomationSettings(brand) {
+  const automationSettingsTable = document.getElementById('automationSettings');
+  const addRowButton = document.querySelector('#automationSettingsForm button');
+
+  // Clear existing automation settings
+  while (automationSettingsTable.rows.length > 1) {
+    automationSettingsTable.deleteRow(1);
+  }
+
+  if (brand) {
+    automationSettings = JSON.parse(localStorage.getItem(`automationSettings_${brand}`)) || {};
+    addRowButton.disabled = false;
+
+    // Load automation settings from localStorage
+    for (const day in automationSettings) {
+      for (const hour in automationSettings[day]) {
+        const settings = automationSettings[day][hour];
+        addRow(day, hour, settings);
+      }
+    }
+  } else {
+    automationSettings = {};
+    addRowButton.disabled = true;
+  }
+}
+
+function addRow(day, hour, settings) {
+  const table = document.getElementById('automationSettings');
+  const row = table.insertRow(-1);
+  const dayCell = row.insertCell(0);
+  const startHourCell = row.insertCell(1);
+  const endHourCell = row.insertCell(2);
+  const maxBatteryDischargePowerCell = row.insertCell(3);
+  const gridChargeEnabledCell = row.insertCell(4);
+  const generatorChargeEnabledCell = row.insertCell(5);
+  const dischargeVoltageCell = row.insertCell(6);
+  const actionsCell = row.insertCell(7);
+
+  dayCell.innerHTML = `<select>${daysOfWeek.map((dayName, index) => `<option value="${index}" ${index === day ? 'selected' : ''}>${dayName}</option>`).join('')}</select>`;
+  startHourCell.innerHTML = `<input type="number" min="0" max="23" placeholder="Start Hour" value="${hour !== undefined ? hour : ''}">`;
+  endHourCell.innerHTML = `<input type="number" min="0" max="23" placeholder="End Hour" value="${hour !== undefined ? hour : ''}">`;
+  maxBatteryDischargePowerCell.innerHTML = `<input type="text" placeholder="Max Battery Discharge Power" value="${settings ? settings.maxBatteryDischargePower : ''}">`;
+  gridChargeEnabledCell.innerHTML = `<select>
+    <option value="">Grid Charge Enabled</option>
+    <option value="true" ${settings && settings.gridChargeEnabled === true ? 'selected' : ''}>True</option>
+    <option value="false" ${settings && settings.gridChargeEnabled === false ? 'selected' : ''}>False</option>
+  </select>`;
+  generatorChargeEnabledCell.innerHTML = `<select>
+    <option value="">Generator Charge Enabled</option>
+    <option value="true" ${settings && settings.generatorChargeEnabled === true ? 'selected' : ''}>True</option>
+    <option value="false" ${settings && settings.generatorChargeEnabled === false ? 'selected' : ''}>False</option>
+  </select>`;
+  dischargeVoltageCell.innerHTML = `<input type="text" placeholder="Discharge Voltage" value="${settings ? settings.dischargeVoltage : ''}">`;
+  actionsCell.innerHTML = `
+    <button class="btn" onclick="saveSettings(this)">Save</button>
+    <button class="btn" onclick="deleteRow(this)">Delete</button>
+  `;
+}
+
+function saveSettings(button) {
+  const row = button.parentNode.parentNode;
+  const day = parseInt(row.cells[0].querySelector('select').value);
+  const startHour = parseInt(row.cells[1].querySelector('input').value);
+  const endHour = parseInt(row.cells[2].querySelector('input').value);
+  const maxBatteryDischargePower = row.cells[3].querySelector('input').value;
+  const gridChargeEnabled = row.cells[4].querySelector('select').value;
+  const generatorChargeEnabled = row.cells[5].querySelector('select').value;
+  const dischargeVoltage = row.cells[6].querySelector('input').value;
+
+  if (startHour >= 0 && startHour <= 23 && endHour >= 0 && endHour <= 23 && startHour <= endHour && maxBatteryDischargePower !== '' && gridChargeEnabled !== '' && generatorChargeEnabled !== '' && dischargeVoltage !== '') {
+    const brand = document.getElementById('inverterBrand').value;
+    if (!automationSettings[brand]) {
+      automationSettings[brand] = {};
+    }
+    if (!automationSettings[brand][day]) {
+      automationSettings[brand][day] = {};
+    }
+
+    for (let hour = startHour; hour <= endHour; hour++) {
+      automationSettings[brand][day][hour] = {
+        maxBatteryDischargePower,
+        gridChargeEnabled: gridChargeEnabled === 'true',
+        generatorChargeEnabled: generatorChargeEnabled === 'true',
+        dischargeVoltage
+      };
+    }
+
+    localStorage.setItem(`automationSettings_${brand}`, JSON.stringify(automationSettings[brand]));
+    alert('Automation settings updated successfully');
+  } else {
+    alert('Please fill in all fields correctly');
+  }
+}
+
+function deleteRow(button) {
+  const row = button.parentNode.parentNode;
+  const day = parseInt(row.cells[0].querySelector('select').value);
+  const startHour = parseInt(row.cells[1].querySelector('input').value);
+  const endHour = parseInt(row.cells[2].querySelector('input').value);
+
+  if (startHour >= 0 && startHour <= 23 && endHour >= 0 && endHour <= 23 && startHour <= endHour) {
+    const brand = document.getElementById('inverterBrand').value;
+    if (automationSettings[brand] && automationSettings[brand][day]) {
+      for (let hour = startHour; hour <= endHour; hour++) {
+        delete automationSettings[brand][day][hour];
+      }
+    }
+
+    localStorage.setItem(`automationSettings_${brand}`, JSON.stringify(automationSettings[brand]));
+    row.parentNode.removeChild(row);
+    alert('Automation settings deleted successfully');
+  } else {
+    alert('Invalid day or hour range');
+  }
+}
+
+
+</script>
+
+<!-- configuration -->
+<script>
+
+let inverterSettings = {};
+ 
+ function saveInverterConfig() {
+   const brand = document.getElementById('inverterBrand').value;
+   if (brand) {
+     const inverterConfig = getInverterConfigFromForm();
+ 
+     fetch('/save-inverter-config', {
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({ [brand]: inverterConfig })
+     })
+     .then(response => response.json())
+     .then(data => {
+       alert(data.message);
+       inverterSettings[brand] = inverterConfig; // Update the local inverterSettings object
+     })
+     .catch(error => alert(`Error: ${error}`));
+   } else {
+     alert('Please select an inverter brand');
+   }
+ }
+ 
+ function getInverterConfigFromForm() {
+   const workMode = document.getElementById('workMode').value;
+   const energyPattern = document.getElementById('energyPattern').value;
+   const maxSellPower = document.getElementById('maxSellPower').value;
+   const solarExportWhenBatteryFull = document.getElementById('solarExportWhenBatteryFull').value === 'true';
+ 
+   return {
+     workMode,
+     energyPattern,
+     maxSellPower,
+     solarExportWhenBatteryFull
+   };
+ }
+ 
+ function showInverterSettings(brand) {
+   const inverterSettingsContainer = document.getElementById('inverterSettingsContainer');
+   inverterSettingsContainer.innerHTML = '';
+ 
+   if (brand) {
+     inverterSettingsContainer.innerHTML = `
+       <div>
+         <label for="workMode">Work Mode:</label>
+         <input type="text" id="workMode" name="workMode" placeholder="Work Mode">
+       </div>
+       <div>
+         <label for="energyPattern">Energy Pattern:</label>
+         <input type="text" id="energyPattern" name="energyPattern" placeholder="Energy Pattern">
+       </div>
+       <div>
+         <label for="maxSellPower">Max Sell Power:</label>
+         <input type="text" id="maxSellPower" name="maxSellPower" placeholder="Sell Power">
+       </div>
+       <div>
+         <label for="solarExportWhenBatteryFull">Solar Export When Battery Full:</label>
+         <select id="solarExportWhenBatteryFull" name="solarExportWhenBatteryFull">
+           <option value="true">True</option>
+           <option value="false">False</option>
+         </select>
+       </div>
+     `;
+   }
+ }
+
+
+  
+</script>
+<!-- totals -->
+  <script>
+    async function fetchDataFromInfluxDB() {
+    const influxDBEndpoint = 'http://192.168.160.55:8086/query?db=homeassistant&u=admin&p=adminadmin';
+    const dailyQueries = [
+        `SELECT mean("value") AS "loadPowerData"
+            FROM "state"
+            WHERE "topic" = 'solar_assistant_DEYE/total/load_energy/state'
+            AND time >= now() - 30d
+            GROUP BY time(1d)`,
+        `SELECT mean("value") AS "pvPowerData"
+            FROM "state"
+            WHERE "topic" = 'solar_assistant_DEYE/total/pv_energy/state'
+            AND time >= now() - 30d
+            GROUP BY time(1d)`,
+        `SELECT mean("value") AS "batteryStateOfChargeData"
+            FROM "state"
+            WHERE "topic" = 'solar_assistant_DEYE/total/battery_energy_in/state'
+            AND time >= now() - 30d
+            GROUP BY time(1d)`,
+        `SELECT mean("value") AS "batteryPowerData"
+            FROM "state"
+            WHERE "topic" = 'solar_assistant_DEYE/total/battery_energy_out/state'
+            AND time >= now() - 30d
+            GROUP BY time(1d)`,
+        `SELECT mean("value") AS "gridPowerData"
+            FROM "state"
+            WHERE "topic" = 'solar_assistant_DEYE/total/grid_energy_in/state'
+            AND time >= now() - 30d
+            GROUP BY time(1d)`,
+        `SELECT mean("value") AS "gridVoltageData"
+            FROM "state"
+            WHERE "topic" = 'solar_assistant_DEYE/total/grid_energy_out/state'
+            AND time >= now() - 30d
+            GROUP BY time(1d)`
+    ];
+
+    try {
+        const dailyResponses = await Promise.all(dailyQueries.map(query =>
+            fetch(influxDBEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `q=${encodeURIComponent(query)}`
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                return response.json();
+            })
+        ));
+
+        const dailyData = dailyResponses.map(response => response.results[0].series[0]);
+
+        return {
+            dailyData: {
+                loadPowerData: dailyData[0].values,
+                pvPowerData: dailyData[1].values,
+                batteryStateOfChargeData: dailyData[2].values,
+                batteryPowerData: dailyData[3].values,
+                gridPowerData: dailyData[4].values,
+                gridVoltageData: dailyData[5].values
+            }
+        };
+    } catch (error) {
+        console.error('Error fetching data from InfluxDB:', error);
+        throw error;
+    }
+}
+
+
+function calculateDailyDifference(data) {
+return data.map((current, index, array) => {
+if (index === 0 || array[index - 1][1] === null || array[index - 1][1] === 0) {
+    return [current[0], 0]; // Set current day's data to zero if previous day's data was null or zero
+} else {
+    const previousData = array[index - 1][1];
+    const currentData = current[1];
+    if (currentData >= previousData) {
+        return [current[0], currentData - previousData]; // Calculate difference if current data is greater than or equal to previous day's data
+    } else {
+        return [current[0], currentData]; // Keep current day's data unchanged if it's less than previous day's data
+    }
+}
+});
+
+
+}
+
+
+
+
+
+
+function sumMonthlyData(dailyData) {
+    const monthlyData = {};
+
+    dailyData.forEach(([timestamp, value]) => {
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1; // Months are zero-based
+        const monthKey = `${year}-${month < 10 ? '0' : ''}${month}`;
+
+        if (!monthlyData[monthKey]) {
+            monthlyData[monthKey] = 0;
+        }
+
+        if (value !== null) {
+            monthlyData[monthKey] += value;
+        }
+    });
+
+    return monthlyData;
+}
+
+function formatNumber(value) {
+    return value !== null ? value.toFixed(1) : '0';
+}
+
+function monthAbbreviation(monthNumber) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return months[monthNumber - 1];
+}
+
+async function displayData() {
+    try {
+        const data = await fetchDataFromInfluxDB();
+
+        const dailyTableBody = document.querySelector('#daily-data-table tbody');
+        const monthlyTableBody = document.querySelector('#monthly-data-table tbody');
+
+        const loadPowerData = calculateDailyDifference(data.dailyData.loadPowerData, true);
+        const pvPowerData = calculateDailyDifference(data.dailyData.pvPowerData, true);
+        const batteryStateOfChargeData = calculateDailyDifference(data.dailyData.batteryStateOfChargeData, true);
+        const batteryPowerData = calculateDailyDifference(data.dailyData.batteryPowerData, true);
+        const gridPowerData = calculateDailyDifference(data.dailyData.gridPowerData, true);
+        const gridVoltageData = calculateDailyDifference(data.dailyData.gridVoltageData, true);
+
+        loadPowerData.forEach((row, index) => {
+            const date = new Date(row[0]);
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // Months are zero-based
+            const year = date.getFullYear();
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${day}/${monthAbbreviation(month)}/${year}</td>
+                <td>${formatNumber(loadPowerData[index][1])} kWh</td>
+                <td>${formatNumber(pvPowerData[index][1])} kWh</td>
+                <td>${formatNumber(batteryStateOfChargeData[index][1])} kWh</td>
+                <td>${formatNumber(batteryPowerData[index][1])} kWh</td>
+                <td>${formatNumber(gridPowerData[index][1])} kWh</td>
+                <td>${formatNumber(gridVoltageData[index][1])} kWh</td>
+            `;
+            dailyTableBody.insertBefore(newRow, dailyTableBody.firstChild);
+        });
+
+        document.getElementById('daily-loading').style.display = 'none';
+        document.getElementById('daily-data-table').style.display = '';
+
+        const summedMonthlyData = {
+            loadPowerData: sumMonthlyData(loadPowerData),
+            pvPowerData: sumMonthlyData(pvPowerData),
+            batteryStateOfChargeData: sumMonthlyData(batteryStateOfChargeData),
+            batteryPowerData: sumMonthlyData(batteryPowerData),
+            gridPowerData: sumMonthlyData(gridPowerData),
+            gridVoltageData: sumMonthlyData(gridVoltageData)
+        };
+
+        const months = Object.keys(summedMonthlyData.loadPowerData).reverse();
+        months.forEach(month => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${monthAbbreviation(parseInt(month.split("-")[1]))}</td>
+                <td>${formatNumber(summedMonthlyData.loadPowerData[month])} kWh</td>
+                <td>${formatNumber(summedMonthlyData.pvPowerData[month])} kWh</td>
+                <td>${formatNumber(summedMonthlyData.batteryStateOfChargeData[month])} kWh</td>
+                <td>${formatNumber(summedMonthlyData.batteryPowerData[month])} kWh</td>
+                <td>${formatNumber(summedMonthlyData.gridPowerData[month])} kWh</td>
+                <td>${formatNumber(summedMonthlyData.gridVoltageData[month])} kWh</td>
+            `;
+            monthlyTableBody.appendChild(newRow); 
+        });
+
+        document.getElementById('monthly-loading').style.display = 'none';
+        document.getElementById('monthly-data-table').style.display = '';
+
+        const dailyTotal = pvPowerData.reduce((sum, row) => sum + (row[1] || 0), 0);
+        const weeklyTotal = pvPowerData.slice(-7).reduce((sum, row) => sum + (row[1] || 0), 0);
+        const monthlyTotal = Object.values(summedMonthlyData.pvPowerData).reduce((sum, value) => sum + value, 0);
+
+        document.getElementById('daily-total').textContent = `${formatNumber(dailyTotal)} kWh`;
+        document.getElementById('weekly-total').textContent = `${formatNumber(weeklyTotal)} kWh`;
+        document.getElementById('monthly-total').textContent = `${formatNumber(monthlyTotal)} kWh`;
+    } catch (error) {
+        console.error('Error displaying data:', error);
+    }
+}
+
+function exportToCSV() {
+    const dailyTable = document.getElementById('daily-data-table');
+    const monthlyTable = document.getElementById('monthly-data-table');
+
+    let csvContent = '';
+
+    const dailyHeaders = Array.from(dailyTable.querySelectorAll('thead th'))
+        .map(header => header.textContent)
+        .join(',');
+
+    const dailyRows = Array.from(dailyTable.querySelectorAll('tbody tr'))
+        .map(row => Array.from(row.querySelectorAll('td'))
+        .map(cell => cell.textContent)
+        .join(','));
+
+    csvContent += 'Daily Data\n';
+    csvContent += dailyHeaders + '\n';
+    csvContent += dailyRows.join('\n') + '\n\n';
+
+    const monthlyHeaders = Array.from(monthlyTable.querySelectorAll('thead th'))
+        .map(header => header.textContent)
+        .join(',');
+
+    const monthlyRows = Array.from(monthlyTable.querySelectorAll('tbody tr'))
+        .map(row => Array.from(row.querySelectorAll('td'))
+        .map(cell => cell.textContent)
+        .join(','));
+
+    csvContent += 'Monthly Data\n';
+    csvContent += monthlyHeaders + '\n';
+    csvContent += monthlyRows.join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'data.csv';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Call the displayData function to populate the tables
+displayData();
+  </script>
+
+  <!-- chart -->
+  <script>
+
+window.onload = async function () {
+    const influxDBEndpoint = 'http://192.168.160.55:8086/query?db=homeassistant&u=admin&p=adminadmin';
+
+    async function fetchData(query) {
+        const response = await fetch(influxDBEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `q=${encodeURIComponent(query)}`
+        });
+        const jsonResponse = await response.json();
+        if (jsonResponse.results && jsonResponse.results[0] && jsonResponse.results[0].series && jsonResponse.results[0].series[0]) {
+            return jsonResponse.results[0].series[0].values;
+        }
+        return [];
+    }
+
+    async function renderChart(containerId, title, yAxisTitle, queries) {
+        try {
+            const datasets = await Promise.all(queries.map(fetchData));
+
+            const labels = datasets[0].map(row => new Date(row[0]));
+
+            const chart = new CanvasJS.Chart(containerId, {
+                animationEnabled: true,
+                title: {
+                    text: title
+                },
+                axisY: {
+                    includeZero: true,
+                    title: yAxisTitle
+                },
+                axisX: {
+                    title: "Time"
+                },
+                toolTip: {
+                    shared: true
+                },
+                legend: {
+                    fontSize: 13
+                },
+                data: datasets.map((data, index) => ({
+                    type: "splineArea",
+                    showInLegend: true,
+                    name: ["Load Power", "Grid Power", "PV Power", "Battery State of Charge"][index],
+                    yValueFormatString: "#,##0 kW",
+                    xValueFormatString: "MMM DD",
+                    dataPoints: data.map((row, rowIndex) => ({
+                        x: labels[rowIndex],
+                        y: row[1]
+                    }))
+                }))
+            });
+
+            chart.render();
+        } catch (error) {
+            console.error('Error:', error.message);
+        }
+    }
+
+    // Render the first chart
+    renderChart("chartContainer1", "Last 52 weeks", "Power (kW)", [
+        `SELECT MEAN("value") AS "Power" FROM "state" WHERE time > now() - 52w AND "topic" = 'solar_assistant_DEYE/total/load_power/state' GROUP BY time(1w)`,
+        `SELECT MEAN("value") AS "Power" FROM "state" WHERE time > now() - 52w AND "topic" = 'solar_assistant_DEYE/total/grid_power/state' GROUP BY time(1w)`,
+        `SELECT MEAN("value") AS "Power" FROM "state" WHERE time > now() - 52w AND "topic" = 'solar_assistant_DEYE/total/pv_power/state' GROUP BY time(1w)`
+    ]);
+
+    // Render the second chart
+    renderChart("chartContainer2", "Last 30 days", "Power (kW)", [
+        `SELECT MEAN("value") AS "Power" FROM "state" WHERE time > now() - 30d AND "topic" = 'solar_assistant_DEYE/total/load_power/state' GROUP BY time(1d)`,
+        `SELECT MEAN("value") AS "Power" FROM "state" WHERE time > now() - 30d AND "topic" = 'solar_assistant_DEYE/total/grid_power/state' GROUP BY time(1d)`,
+        `SELECT MEAN("value") AS "Power" FROM "state" WHERE time > now() - 30d AND "topic" = 'solar_assistant_DEYE/total/pv_power/state' GROUP BY time(1d)`
+    ]);
+
+    // Render the third chart (Battery State of Charge)
+    renderChart("chartContainer3", "Battery State of Charge", "State of Charge (%)", [
+        `SELECT MEAN("value") AS "Battery State of Charge" FROM "state" WHERE time > now() - 1d AND "topic" = 'solar_assistant_DEYE/battery_1/state_of_charge/state' GROUP BY time(1d)`
+    ]);
+}
+
+  </script>
+  </body>
+</html>
